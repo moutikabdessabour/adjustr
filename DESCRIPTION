@@ -1,6 +1,6 @@
-Package: adjust
-Title: Ajustement de distribution
-Version: 0.0.1.0
+Package: adjustr
+Title: Auto-Fitting distributions
+Version: 0.5.0.0
 Authors@R: 
     person(given = "Abdessabour",
            family = "Moutik",

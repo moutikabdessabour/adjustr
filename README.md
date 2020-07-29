@@ -1,1 +1,81 @@
-# adjustr
+
+# Adjustr v0.5.0.0
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+The goal of Adjustr is to easily fit a given random variable in order to
+find it’s distribution.
+
+## Installation
+
+The development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("moutikabdessabour/adjustr")
+```
+
+# Using it
+
+The package is made up of two main functions.
+
+## getfitdistr
+
+To fit continuous random variables
+
+The available arguments
+are:
+
+| Argument        | Description                                                                       |
+| --------------- | --------------------------------------------------------------------------------- |
+| `short`         | when used the function will return only the best fitted distribution if it exists |
+| `x`             | The vector that contains the values of the continuous random variable             |
+| `showplots`     | Whether To show the plots or not                                                  |
+| `plots.as.vars` | Whether you want to add the plots to the result                                   |
+| `xlab`          | what do you want to name the X axis?                                              |
+| `color`         | The color you want to use in the plots                                            |
+
+This code is all that’s needed to fit your random variable, the returned
+value is a list. let `distribution` be the name of a distribution we
+have:
+
+| File            | Description                                                                                                                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dirtibutions`  | The distribution that the code looped through.                                                                                                                                                                                                    |
+| `acceptedDistr` | A `data.frame` that contains the distributions that verify the null hypothesis order from the lowest **AIC** to the biggest.                                                                                                                      |
+| `distribution`  | A list containing the `$estimate` for said distribution, the `$p.value` for the Kolmogorov-Smirnov test, `$accepthyp` when the Null Hypothesis is accepted or not and `$aic` containing the *Akaike information criterion* for this distribution. |
+| `bestdistr`     | the best fitted distribution                                                                                                                                                                                                                      |
+
+## getgoodfit
+
+To fit discrete random variables:
+
+The available arguments
+are:
+
+| Argument        | Description                                                                       |
+| --------------- | --------------------------------------------------------------------------------- |
+| `short`         | when used the function will return only the best fitted distribution if it exists |
+| `x`             | The vector that contains the values of the discrete random variable               |
+| `showplots`     | Whether To show the plots or not                                                  |
+| `plots.as.vars` | Whether you want to add the plots to the result                                   |
+| `xlab`          | what do you want to name the X axis?                                              |
+
+This code is all that’s needed to fit your random variable, the returned
+value is a list. let `distribution` be the name of a distribution we
+have:
+
+| File            | Description                                                                                                                                                                                                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dirtibutions`  | The distribution that the code looped through.                                                                                                                                                                                                                                |
+| `acceptedDistr` | A `data.frame` that contains the distributions that verify the null hypothesis order from the lowest **Chi-squared** to the biggest.                                                                                                                                          |
+| `distribution`  | A list containing the `$estimate` for said distribution, the `$observed` and `$fitted` values, the `$count` and the `$prob`, the `$p.value`, `$Xsquared` and the `$df` degrees of freedom for the Chi-squared test, `$accepthyp` when the Null Hypothesis is accepted or not. |
+| `bestdistr`     | the best fitted distribution                                                                                                                                                                                                                                                  |
+
+# Questions?
+
+Confused by anything (there’s a lot to be confused by)? [Open an issue
+on github](https://github.com/moutikabdessabour/adjustr/issues/new) and
+let me know.

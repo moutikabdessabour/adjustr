@@ -9,14 +9,14 @@ getfitdistr(
   xlab = "Claim amounts",
   showplots = TRUE,
   short = TRUE,
-  color = list(gamma = "steelblue", lognormal = "firebrick", exponential = "green"),
+  color = c(gamma = "steelblue", lognormal = "firebrick", exponential = "green"),
   plots.as.vars = F
 )
 }
 \arguments{
 \item{x}{Vector, the continuous random variable.}
 
-\item{xlab}{a character string to separate the terms.}
+\item{xlab}{a character string to label the x axis.}
 
 \item{showplots}{Logical, determines whether to show plots.}
 
