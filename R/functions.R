@@ -1,51 +1,6 @@
-#################################################
-#
-#              fonctions d'approx
-#
-#     Discrète : getfitdistr
-#
-#     ~ : getgoodfit
-#
-#
-#
-#333333333333333333333333333333333333333333333333
+
 
 if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
-#' @usage
-#'  pour \strong{ short=TRUE}
-#'    `fit <- getfitdistr(x)`
-#'    pour accéder :\describe{
-#'      \item{au nom de la distribution la mieux ajustée}{utilisez \strong{fit$loi}}
-#'      \item{au(x) paramétre(s) estimé(s) de cette distribution}{utilisez \strong{fit$estimate}}
-#'      \item{ā l'AIC}{utilisez \strong{fit$aic}}
-#'      \item{à la p-value}{utilisez \strong{fit$p.value}}
-#'    }
-#'  pour \strong{short=FALSE}
-#'    `fit <- getfitdistr(x, short=FALSE)`
-#'    pour afficher les lois utilisées par cette fonction
-#'      `> st$lois`
-#'      `[1] "gamma"       "lognormal"   "exponential"`
-#'
-#'    pour accéder :\describe{
-#'      \item{      au nom de distribution la mieux ajustée}{    utilisez \strong{fit$bestdistr}}
-#'      \item{      aux distributions ayant une \emph{p-value>.05}}{    utilisez \strong{fit$acceptedDistr}}
-#'      \item{      à la distribution ajustée de chaque `loi`}{   utilisez \strong{fit$loi}}
-#'    }
-#'la valeur \strong{fit$loi$accepthyp} détermine s'il faut rejeter l'hypothèse nulle pour la distribution de \strong{loi}
-#'les colonnes sont presque les mêmes pour `getfitdistr(x)` et `getfitdistr(x, short=FALSE)$loi`
-#'  pour \strong{short=FALSE}
-#'    `fit <- getfitdistr(x, short=FALSE)`
-#'    pour afficher les lois utilisées par cette fonction
-#'      `> fit$lois`
-#'      `[1] "pois"   "binom"  "nbinom"`
-#'    pour accéder :\describe{
-#'      \item{      au nom de distribution la mieux ajustée}{    utilisez \strong{fit$bestdistr}}
-#'      \item{      aux distributions ayant une \emph{p-value>.05}}{    utilisez \strong{fit$acceptedDistr}}
-#'      \item{      à la distribution ajustée de chaque `loi`}{   utilisez \strong{fit$loi}}
-#'    }
-#'la valeur \strong{fit$loi$accepthyp} détermine s'il faut rejeter l'hypothèse nulle pour la distribution de \strong{loi}
-#'les colonnes sont presque les mêmes pour `getfitdistr(x)` et `getfitdistr(x, short=FALSE)$loi`
-
 
 
 #' @export
@@ -68,28 +23,29 @@ print.continuous <- function(x, ...){
 
 }
 
-#' Ajustement avec des distributions continues
+
+
+#' Fitting with continuous distributions
 #'
-#' calcule la distribution la mieux ajustée pour les données fournies
+#' Calculates the best fitted distribution for the given random variable
 #'
-#' @param x la variable aléatoire continue a traitè
-#' @param showplots valeur booléenne détermine s'il faut générer des courbes
-#' @param short définit le format de valeur renvoyé
-#' @param color définit les couleurs des courbes
-#' @param plots.as.vars Logical détermine s'il faut retourner les courbes
-#' @param xlab le label utilisé dans les courbes
+#' @param x Vector, the continuous random variable.
+#' @param showplots Logical, determines whether to show plots.
+#' @param short Logical, determines whether the output will contain the best fitted distribution or all of them.
+#' @param color Named Vector, the colors to use in the plot.
+#' @param plots.as.vars Logical, whether to add the plots to the returned list.
+#' @param xlab a character string to separate the terms.
 #'
-#' @return liste contenant la meilleure distribution ajustée lorsque  `short == TRUE`
-#'         ou contenant toutes les distributions ajustées autrement avec la meillieure distribution,
-#'         si elle existe, dans `result$bestdistr` et ceux dont l'hypothèse nulle est acceptée se
-#'         trouve dans `result$acceptedDistr`
+#' @return A list containing only the best fitted distribution when \code{short=TRUE} otherwise it'll contain all the adjusted distributions.
+#'  If the best fitted distribution exists, it can be accessed through \code{result$bestdistr}, and those who validated the Null
+#'  Hypothesis are found at \code{result$acceptedDistr} ordered from the lowest AIC to the highest.
 #' @examples
 #' \dontrun{
 #'   (fit <- getfitdistr(x))
 #' }
-#' @author abdessabour moutik
+#' @author Abdessabour MOUTIK
 #' @export
-getfitdistr <- function(x, xlab="Montants de sinistre", showplots=TRUE, short=TRUE, color=list(gamma = "steelblue", lognormal="firebrick",exponential= "green"), plots.as.vars=F){
+getfitdistr <- function(x, xlab="Claim amounts", showplots=TRUE, short=TRUE, color=list(gamma = "steelblue", lognormal="firebrick",exponential= "green"), plots.as.vars=F){
   #library(latex2exp)
   #library(MASS)
   #require(ggplot2)
@@ -103,7 +59,7 @@ getfitdistr <- function(x, xlab="Montants de sinistre", showplots=TRUE, short=TR
     center <- theme(plot.title = element_text(hjust = 0.5), legend.position = c(0.5, 0.2))
 
     mainplot <- ggplot(data.frame(x=seq(0, max(x),length.out= length(x)),var=x), aes(x=x)) +
-      stat_ecdf(aes(var, colour="X"), color="black", show.legend=F) + labs(title=p("Fonction de distribution cumulative empirique des ",xlab), x=xlab, y=p("F(",xlab,")")) +
+      stat_ecdf(aes(var, colour="X"), color="black", show.legend=F) + labs(title=p("Empirical cumulative distribution function of ",xlab), x=xlab, y=p("F(",xlab,")")) +
       center
 
     if(showplots)  print(mainplot)
@@ -141,8 +97,8 @@ getfitdistr <- function(x, xlab="Montants de sinistre", showplots=TRUE, short=TR
       stat_function(aes(colour="gamma"), fun=pgamma , args=result$gamma$estimate) +
       stat_function(aes(colour="lognormal"), fun=plnorm, args=result$lognormal$estimate) +
       stat_function(aes(colour="exponential"), fun=pexp, args=result$exponential$estimate) +
-      scale_colour_manual("Légende", values=c(ecdf="black",gamma="steelblue", lognormal="firebrick",exponential= "green"), label=c("fn de r. de x", "fn de r. de la loi exponentiel", "fn de r. de la loi gamma", "fn de r. de la loi lognormal")) +
-      scale_y_continuous(labels=scales::percent) + labs(title=p("Ajustement de la fn de r de ", xlab),x=xlab, y=p("F(",xlab,")")) + center
+      scale_colour_manual("the distribution function of:", values=c(ecdf="black",color), label=c(xlab, "Exponentiel", "Gamma", "Log-normal")) +
+      scale_y_continuous(labels=scales::percent) + labs(title=p("Fitting of  the distribution function ", xlab),x=xlab, y=p("F(",xlab,")")) + center
     if(plots.as.vars)  result$combinedplot <- combinedplot
     if(showplots)  print(combinedplot)
   }
@@ -160,28 +116,28 @@ getfitdistr <- function(x, xlab="Montants de sinistre", showplots=TRUE, short=TR
 }
 
 
-#' Ajustement avec des distributions discrètes
+
+
+#' Fitting with discrete distributions
 #'
-#' calcule la distribution la mieux ajustée pour les données fournies
+#' Calculates the best fitted distribution for the given random variable
 #'
-#' @param x la variable aléatoire discrète a traitè
-#' @param short définit le format de la valeur renvoyée par défaut TRUE
-#' @param showplots valeur booléenne détermine s'il faut afficher les courbes
-#' @param plots.as.vars Logical détermine s'il faut retourner les courbes
-#' @param xlab le label utilisé dans les courbes
+#' @param x Vector, the discrete random variable.
+#' @param showplots Logical, determines whether to show plots.
+#' @param short Logical, determines whether the output will contain the best fitted distribution or all of them.
+#' @param plots.as.vars Logical, whether to add the plots to the returned list.
+#' @param xlab a character string to separate the terms.
 #'
-#' @return liste contenant la meilleure distribution ajustée lorsque  `short == TRUE`
-#'         ou contenant toutes les distributions ajustées autrement avec la meillieure distribution,
-#'         si elle existe, dans `result$bestdistr` et ceux dont l'hypothèse nulle est acceptée se
-#'         trouve dans `result$acceptedDistr`
-#'
+#' @return A list containing only the best fitted distribution when \code{short=TRUE} otherwise it'll contain all the adjusted distributions.
+#'  If the best fitted distribution exists, it can be accessed through \code{result$bestdistr}, and those who validated the Null
+#'  Hypothesis are found at \code{result$acceptedDistr} ordered from the lowest AIC to the highest.
 #' @examples
 #' \dontrun{
-#'    (fit <- getgoodfit(x))
+#'   (fit <- getgoodfit(x))
 #' }
-#' @author abdessabour moutik
+#' @author Abdessabour MOUTIK
 #' @export
-getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Nombre de sinistres"){
+getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Number of claims"){
   #library(vcd)
   #require(ggplot2)
   result <- list(lois=c("pois", "binom", "nbinom"))
@@ -194,14 +150,14 @@ getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Nombre
   result$acceptedDistr <-data.frame(loi=character(0), Xsquared=numeric(0), stringsAsFactors = FALSE)
 
   if(showplots || plots.as.vars) {
-    pp <- ggplot(data.frame(var=as.numeric(table(x)), l=0:(length(table(x))-1)),aes(x=l, y=var)) + geom_bar(stat="identity", colour = 'black', fill='#eeeeee') + labs(title=p("Distribution des ", xlab), x=xlab, y="Fréquence") + center
+    pp <- ggplot(data.frame(var=as.numeric(table(x)), l=0:(length(table(x))-1)),aes(x=l, y=var)) + geom_bar(stat="identity", colour = 'black', fill='#eeeeee') + labs(title=p("Distribution of ", xlab), x=xlab, y="Frequency") + center
     if(plots.as.vars) result$Xplot <- pp
     if(showplots) print(pp)
   }
   for (loi in result$lois) {
     if(loi!="pois"){
       par <- list( size = getsize(moy, v, loi) )
-      if(par$size<0 || is.na(par$size)) {print(p("Erreur lors de l'estimation du parametre n = ", par$size, " de la loi ", if(loi=="nbinom") "binomiale négative" else "binomiale")); par$size <- default.length}
+      if(par$size<0 || is.na(par$size)) {print(p("Error occured whilst estimating the size n = ", par$size, " de la loi ", if(loi=="nbinom") "negative binomial" else "binomial")); par$size <- default.length}
       fit <- goodfit(x, loi, par = par)
     } else {
       fit <- goodfit(x, loi)
@@ -209,7 +165,7 @@ getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Nombre
 
     #if(showplots) {
     #   sloi <- TeX(p("Ajustement par une distrubition  ", if(loi=="pois") "de Poisson" else if(loi=="nbinom") "Binomiale négative" else "Binomiale","(", p(round(as.numeric(fit$par),digits=2), sep=", "),")"));#sapply(fit$par, function(x) round(x,digits=2))
-    #   pp <- ggplot(data=data.frame( number=fit$count, fitted=sqrt(fit$fitted), observed=sqrt(fit$observed)), aes(x=number, y=fitted)) + geom_bar(aes(y=observed), stat="identity", colour="lightcyan") + geom_line(size=2,colour="firebrick")  + geom_errorbar(aes(ymin = observed, ymax = fitted), colour="#7aadd1", size = .85, width=0.25) + geom_point(size=4, colour="grey") + labs(title=sloi, x=xlab, y=TeX("$\\sqrt{Fréquence}$")) + center
+    #   pp <- ggplot(data=data.frame( number=fit$count, fitted=sqrt(fit$fitted), observed=sqrt(fit$observed)), aes(x=number, y=fitted)) + geom_bar(aes(y=observed), stat="identity", colour="lightcyan") + geom_line(size=2,colour="firebrick")  + geom_errorbar(aes(ymin = observed, ymax = fitted), colour="#7aadd1", size = .85, width=0.25) + geom_point(size=4, colour="grey") + labs(title=sloi, x=xlab, y=TeX("$\\sqrt{Frequency}$")) + center
     #   if(plots.as.vars) result[[loi]]$plot <- pp
     #   print(pp)
     #   rm(pp)
@@ -312,9 +268,9 @@ autoplot.discrete<- function(object,
   #size <- if (l>10)  0.75 + 5 * size / l else size
   #width <- if (l>10)  0.75 + 5 * width / l else width
 #  data.frame(height = sqrt(object$observed), line= sqrt(object$fitted), width=width, x=object$count) %>% ggplot2::ggplot(aes(x=x, y=line, xmin=x-(width/2), xmax=x+(width/2), ymin=line-height,ymax=line)) + ggplot2::geom_rect( colour=colour[1], fill=fill) + ggplot2::geom_line( size = size[1], colour=colour[2])+ ggplot2::geom_point( size = size[2], colour=colour[2]) + ggplot2::geom_hline(yintercept = 0) + ggplot2::xlab(attr(object,"xlab")) +
- #   ggplot2::ylab(latex2exp::TeX("$\\sqrt{\\textit{Fréquence}}$"))
+ #   ggplot2::ylab(latex2exp::TeX("$\\sqrt{\\textit{Frequency}}$"))
   ggplot(data.frame(height = sqrt(object$observed), line= sqrt(object$fitted), width=width, x=object$count), aes(x=x, y=line, xmin=x-(width/2), xmax=x+(width/2), ymin=line-height,ymax=line)) + geom_rect( colour=colour[1], fill=fill) + geom_line( size = size[1], colour=colour[2])+ geom_point( size = size[2], colour=colour[2]) + geom_hline(yintercept = 0) + xlab(attr(object,"xlab")) +
-    ylab(latex2exp::TeX("$\\sqrt{\\textit{Fréquence}}$"))
+    ylab(latex2exp::TeX("$\\sqrt{\\textit{Frequency}}$"))
 }
 
 

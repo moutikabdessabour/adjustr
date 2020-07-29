@@ -2,41 +2,40 @@
 % Please edit documentation in R/functions.R
 \name{getgoodfit}
 \alias{getgoodfit}
-\title{Ajustement avec des distributions discrètes}
+\title{Fitting with discrete distributions}
 \usage{
 getgoodfit(
   x,
   showplots = F,
   short = TRUE,
   plots.as.vars = F,
-  xlab = "Nombre de sinistres"
+  xlab = "Number of claims"
 )
 }
 \arguments{
-\item{x}{la variable aléatoire discrète a traitè}
+\item{x}{Vector, the discrete random variable.}
 
-\item{showplots}{valeur booléenne détermine s'il faut afficher les courbes}
+\item{showplots}{Logical, determines whether to show plots.}
 
-\item{short}{définit le format de la valeur renvoyée par défaut TRUE}
+\item{short}{Logical, determines whether the output will contain the best fitted distribution or all of them.}
 
-\item{plots.as.vars}{Logical détermine s'il faut retourner les courbes}
+\item{plots.as.vars}{Logical, whether to add the plots to the returned list.}
 
-\item{xlab}{le label utilisé dans les courbes}
+\item{xlab}{a character string to separate the terms.}
 }
 \value{
-liste contenant la meilleure distribution ajustée lorsque  \code{short == TRUE}
-ou contenant toutes les distributions ajustées autrement avec la meillieure distribution,
-si elle existe, dans \code{result$bestdistr} et ceux dont l'hypothèse nulle est acceptée se
-trouve dans \code{result$acceptedDistr}
+A list containing only the best fitted distribution when \code{short=TRUE} otherwise it'll contain all the adjusted distributions.
+If the best fitted distribution exists, it can be accessed through \code{result$bestdistr}, and those who validated the Null
+Hypothesis are found at \code{result$acceptedDistr} ordered from the lowest AIC to the highest.
 }
 \description{
-calcule la distribution la mieux ajustée pour les données fournies
+Calculates the best fitted distribution for the given random variable
 }
 \examples{
 \dontrun{
-   (fit <- getgoodfit(x))
+  (fit <- getgoodfit(x))
 }
 }
 \author{
-abdessabour moutik
+Abdessabour MOUTIK
 }

@@ -2,11 +2,11 @@
 % Please edit documentation in R/functions.R
 \name{getfitdistr}
 \alias{getfitdistr}
-\title{Ajustement avec des distributions continues}
+\title{Fitting with continuous distributions}
 \usage{
 getfitdistr(
   x,
-  xlab = "Montants de sinistre",
+  xlab = "Claim amounts",
   showplots = TRUE,
   short = TRUE,
   color = list(gamma = "steelblue", lognormal = "firebrick", exponential = "green"),
@@ -14,26 +14,25 @@ getfitdistr(
 )
 }
 \arguments{
-\item{x}{la variable aléatoire continue a traitè}
+\item{x}{Vector, the continuous random variable.}
 
-\item{xlab}{le label utilisé dans les courbes}
+\item{xlab}{a character string to separate the terms.}
 
-\item{showplots}{valeur booléenne détermine s'il faut générer des courbes}
+\item{showplots}{Logical, determines whether to show plots.}
 
-\item{short}{définit le format de valeur renvoyé}
+\item{short}{Logical, determines whether the output will contain the best fitted distribution or all of them.}
 
-\item{color}{définit les couleurs des courbes}
+\item{color}{Named Vector, the colors to use in the plot.}
 
-\item{plots.as.vars}{Logical détermine s'il faut retourner les courbes}
+\item{plots.as.vars}{Logical, whether to add the plots to the returned list.}
 }
 \value{
-liste contenant la meilleure distribution ajustée lorsque  \code{short == TRUE}
-ou contenant toutes les distributions ajustées autrement avec la meillieure distribution,
-si elle existe, dans \code{result$bestdistr} et ceux dont l'hypothèse nulle est acceptée se
-trouve dans \code{result$acceptedDistr}
+A list containing only the best fitted distribution when \code{short=TRUE} otherwise it'll contain all the adjusted distributions.
+If the best fitted distribution exists, it can be accessed through \code{result$bestdistr}, and those who validated the Null
+Hypothesis are found at \code{result$acceptedDistr} ordered from the lowest AIC to the highest.
 }
 \description{
-calcule la distribution la mieux ajustée pour les données fournies
+Calculates the best fitted distribution for the given random variable
 }
 \examples{
 \dontrun{
@@ -41,5 +40,5 @@ calcule la distribution la mieux ajustée pour les données fournies
 }
 }
 \author{
-abdessabour moutik
+Abdessabour MOUTIK
 }
