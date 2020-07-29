@@ -1,0 +1,10 @@
+importFrom( "stats", "chisq.test", "ks.test", "line", "pchisq", "pexp",
+               "pgamma", "plnorm", "qchisq", "var")
+importFrom("ggplot2", "autoplot", "aes", "element_text", "geom_bar", "geom_hline", "geom_line", "geom_point", "geom_rect", "ggplot", "labs", "scale_colour_manual", "scale_y_continuous", "stat_ecdf", "stat_function", "theme", "xlab", "ylab")
+importFrom("MASS", "fitdistr")
+importFrom("vcd", "goodfit")
+S3method(autoplot,discrete)
+S3method(print,discrete)
+S3method(print,continuous)
+export(getfitdistr)
+export(getgoodfit)
