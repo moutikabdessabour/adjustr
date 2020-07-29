@@ -25,6 +25,15 @@ The package is made up of two main functions.
 
 To fit continuous random variables
 
+``` r
+getfitdistr(x, 
+            short=TRUE, 
+            showplots=TRUE,
+            plots.as.vars=FALSE, 
+            xlab="Claim amounts",
+            color=c(gamma = "steelblue", lognormal="firebrick",exponential= "green"))
+```
+
 The available arguments
 are:
 
@@ -50,7 +59,12 @@ have:
 
 ## getgoodfit
 
-To fit discrete random variables:
+To fit discrete random
+variables:
+
+``` r
+getgoodfit(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Number of claims")
+```
 
 The available arguments
 are:

@@ -44,7 +44,7 @@ The package is made up of two main functions.
 ## getfitdistr
 
 To fit continuous random variables
-```{r, eval=F}
+``` r
 getfitdistr(x, 
             short=TRUE, 
             showplots=TRUE,
@@ -76,7 +76,7 @@ This code is all that's needed to fit your random variable, the returned value i
 ## getgoodfit
 
 To fit discrete random variables:
-```{r, eval=F}
+``` r
 getgoodfit(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Number of claims")
 ```
 
