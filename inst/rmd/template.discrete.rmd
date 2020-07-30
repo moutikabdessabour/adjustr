@@ -1,0 +1,40 @@
+
+```{r {{loi}}-se, include=FALSE}
+caption = p("Ajustement par une distrubition $\\sim \\mathcal{", if("{{loi}}"=="pois") "P" else if("{{loi}}"=="nbinom") "NB" else "B" ,"} \\left(", p(round(as.numeric(result${{loi}}$estimate),digits=2), sep=", "),"\\right)$")
+```
+
+# Ajustement par une distribution de loi {{sloi}}
+
+Après avoir utilisé ``vcd::goodfit(x, "{{loi}}"`r if("{{loi}}" %in% c("binom","nbinom")){p(", size=", result${{loi}}$estimate$size)}`)`` pour obtenir la distribution {{sloi}} ajustée dans le corps de notre fonction `getgoodfit`. On retrouvera l'*estimation* suivantes:
+```{r {{loi}}-1}
+result${{loi}}$estimate
+```
+On affiche le rootograme suspendu :
+```{r "{{loi}}-2",fig.height=4, fig.width=5, fig.cap=caption}
+result${{loi}}$plot
+``` 
+`r if(result$hasbest && result$bestdistr=="{{loi}}"){"On remarque que la distribution {{sloi}} est la mieux ajustée à la distribution de **X**."}`
+
+On affiche les valeurs de **X**, les *effectifs théoriques*, les *effectifs observés* et le *vecteur de probabilté* :
+```{r "{{loi}}-3", eval=F}
+result${{loi}}
+```
+```{r "{{loi}}-9", echo=FALSE, eval=T}
+print(result${{loi}})
+#data.frame(result${{loi}}[c("count", "fitted", "observed", "prob")])
+```
+
+En utilisant le test de $\tilde{\chi}$^2^~`r paste(result${{loi}}$df,"", sep="")`~ on retrouvera la $$pvalue = `r paste(result${{loi}}$p.value,"")`$$ et $$\tilde{\chi}^2 = `r paste(result${{loi}}$Xsquared,"",sep="")`$$  
+
+Le 95^e^ centile d’une loi $\chi^2_{`r paste(result${{loi}}$df,"", sep="")`}$ $$\chi^2_{`r paste(result${{loi}}$df,"", sep="")`}(95\%) = `r paste(qchisq(0.95, result${{loi}}$df),"")`$$
+
+on a donc $$\tilde{\chi}^2 `r paste(if(result${{loi}}$accepthyp) "<" else ">","")` \chi^2_{`r paste(result${{loi}}$df,"", sep="")`}(95\%)$$
+et $$pvalue `r paste(if(result${{loi}}$accepthyp) ">" else "<","")` 5\%$$
+```{r "{{loi}}-4", include=FALSE}
+  if(result${{loi}}$accepthyp){
+    text <- "On accepte l'hypothèse Nulle $\\mathcal{H}_0$. Donc la distribution de loi **{{sloi}}** permet de bien modéliser la distribution la valeur aléatoire **X**."
+  }else{
+    text <- "On rejete l'hypthèse Nulle $\\mathcal{H}_0$. Donc la distribution de loi **{{sloi}}** ne permet pas de modèlisé celle de **X**.  "
+  }
+```
+`r paste(text,"  ")`  

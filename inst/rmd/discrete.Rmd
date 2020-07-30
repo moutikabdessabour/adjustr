@@ -1,0 +1,94 @@
+---
+lang : "fr-FR"
+lof : true
+output:
+  pdf_document: 
+    toc : true
+    fig_caption: yes 
+    includes:  
+      in_header: preamble-latex.tex   
+  html_document:
+    toc : true
+    df_print: paged    
+params:
+  path : "~/Downloads/devoir20octobre2019/montantsinistres/montantssinistre30.csv"
+  author: "Abdessabour MOUTIK"
+  date: "`r Sys.Date()`"
+  title: "Adjustr"
+title: "`r params$title`"
+date: "`r params$date`"
+author: "`r params$author`"
+---
+
+```{r load_packages, include=FALSE}
+library(knitr)
+library(adjustr)
+library(latex2exp)
+```
+
+```{r setup, include=FALSE}
+options(warn=-1)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE,  fig.align = 'center')
+if(is_latex_output()) opts_chunk$set(dev="pdf")
+path = params$path
+p <- function(..., sep=""){
+  paste(..., sep=sep, collapse = sep)
+}
+```
+
+
+`r if(is_latex_output()) "\\newpage" else ''`
+
+  La variable aléatoire **X** a étudié est le nombre de sinistres.
+D'abord, nous importons le fichier `nombresinistre30.csv` a notre session R on utilisons la fonction `read.csv` :
+```{r}
+db.nbrsin <- read.csv2(path)
+```
+  On affecte la deuxième colone de `db.nbrsin` a notre vecteur `x`
+```{r}
+x <- db.nbrsin[[2]]
+```
+```{r include=FALSE}
+mv <- c(mean(x), var(x))
+distributions <- list(binom="binomiale", pois="de poisson", nbinom="binomiale négative")
+truth <- c(mv[1]>mv[2], mv[1]==mv[2], mv[2]>mv[1])
+vc <- c(">","=","<")
+```
+  On a l'espérance et la variance de X sont :
+  $$ \bar{X} = `r paste(mv[1],"", sep="")` \quad \text{ET} \quad  \hat\sigma^2_X = `r paste(mv[2],"", sep="")`  $$
+
+  On remarque que $$\bar{X} `r vc[truth]` \hat\sigma^2_X$$ donc la distribution la mieux ajustée peut être celle d'une loi **`r paste(distributions[truth], sep="")`**.
+
+  J'appelle alors ma fonction `getgoodfit` qui retourne une liste contenant l'*estimation*, les *effectifs théorique*, le *vecteur de probabilté*, le *degré de liberté*, la *p-value*, et l'*$\tilde{\chi}$^2^* pour les distributions données dans la colonne `distributions` du résultat. Simultanément, cette fonction crée le diagramme à barres des *effectifs observés* et les rootogrammes suspendus pour chaque ajustement.
+```{r}
+result <- getgoodfit(x, short=FALSE, plots.as.vars = TRUE)
+```
+```{r, include=F}
+result$hasbest <- "bestdistr" %in% names(result)
+```
+Les distributions utilisées sont :
+  ```{r}
+result$distributions
+```
+On trace l'histogramme des nombres de sinistres **X**.
+
+```{r, fig.width=5, fig.cap="Distribution des Nombre de sinistres"}
+result$Xplot
+```
+
+
+```{r include=FALSE}
+out <- NULL
+for (loi in as.character(result$distributions)) {
+  sloi <- distributions[[loi]]
+  result[[loi]]$accepthyp <- "accepthyp" %in% names(result[[loi]]) && !is.na(result[[loi]]$accepthyp) && result[[loi]]$accepthyp
+  out = c(out, knit_expand('template.discrete.rmd'))
+}
+
+### *Conclusion :* La distribution la mieux ajustée est celle de la loi `r distributions[[result$bestdistr]]`
+```
+
+`r paste(knit(text = out), collapse = '\n')`
+
+`r paste(knit(text = knit_expand('conclusion.rmd')), collapse = '\n')`
+

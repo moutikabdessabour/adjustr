@@ -1,0 +1,148 @@
+---
+lang : "fr-FR"
+output:
+  pdf_document: 
+    fig_caption: yes 
+    includes:  
+      in_header: preamble-latex.tex   
+  html_document:
+    df_print: paged    
+params:
+  numero : 30
+  path : "~/Downloads/devoir20octobre2019/"
+  author: "Abdessabour MOUTIK"
+  date: "`r Sys.Date()`"
+title: "`r params$title`"
+date: "`r params$date`"
+author: "`r params$author`"
+lof : true
+toc : true
+---
+
+```{r load_packages, include=FALSE}
+library(knitr)
+library(adjust)
+library(tidyverse)
+library(latex2exp)
+```
+
+```{r setup, include=FALSE}
+options(warn=-1)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, dev="pdf", fig.align = 'center')
+numero = as.numeric(params$numero)
+path = params$path
+p <- function(..., sep=""){
+  paste(..., sep=sep, collapse = sep)
+}
+```
+
+\newpage
+# Exercice N°1
+La variable aléatoire **X** a étudié est les montants de sinistre.
+D'abord, nous importons le fichier ``montantsinistre`r paste(numero)`.csv`` a notre session R on utilisons la fonction `read.csv` :
+```{r eval=FALSE}
+db.mntsin <- read.csv2(p("montantsisnitres/montantssinistre", numero,".csv"))
+```
+```{r, include=FALSE} 
+#On definit la variable $numero = `r paste(numero)`$ et $path = `r path`$
+db.mntsin <- read.csv2(p(path,"montantsinistres/montantssinistre", numero,".csv"))
+```
+  On affecte la deuxième colone de `db.mntsin` a notre vecteur `x`
+```{r}
+x <- db.mntsin$x
+```
+  J'appelle alors ma fonction `getfitdistr` qui retourne une liste contenant l'*estimation*, la *p-value*, et si l'hypothèse nulle n'est pas rejetée, l'*AIC* pour les lois données dans la colonne `lois` du résultat. Simultanément, cette fonction crée les courbes des fonctions de distribution cumulative de **X** et des distributions ajustées.
+```{r eval=FALSE}
+result <- getfitdistr(x, short=FALSE, plots.as.vars = TRUE)
+```
+```{r include=FALSE}
+result <- getfitdistr(x, short=F, plots.as.vars = TRUE)
+lois <- list(exponential="exponentielle", lognormal="log-normale", gamma="gamma")
+result$hasbest<- "bestdistr" %in% names(result)
+```
+  Les lois utilisées sont :
+```{r}
+result$lois
+```
+  On trace la courbe de la fonction de distribution cumulative empirique de **X**.
+
+```{r, fig.asp=.60, fig.cap="$\\hat{F}_{X}$ Fonction de distribution cumulative empirique de \\textbf{X}"}
+result$plot
+```
+  
+  On trace la courbe de la fonction de distribution cumulative empirique de **X** et des fonctions de distribution cumulative des lois **`r paste(lois,sep = "**, **")`**.
+```{r, fig.cap="$\\hat{F}_{X}$ et des F.D.Cs des lois \\textbf{gamma}, \\textbf{exponentielle} et \\textbf{log-normale}"}
+result$combinedplot
+```
+
+`r if(result$hasbest) p("On remarque que la distribution de la loi **",lois[[result$bestdistr]],"** est la distribution la mieux ajustée à la distribution de **X**.")`
+
+
+```{r include=FALSE}
+out = NULL
+for (loi in as.character(result$lois)) {
+  result[[loi]]$accepthyp <- "accepthyp" %in% names(result[[loi]]) && !is.na(result[[loi]]$accepthyp) && result[[loi]]$accepthyp
+  sloi <- if(loi=="exponential") "exponentielle" else if(loi=="lognormal") "log-normale" else loi
+  out = c(out, knit_expand('template.rmd'))
+}
+```
+
+`r paste(knit(text = out), collapse = '\n')`
+
+`r paste(knit(text = knit_expand('conclusion.rmd')), collapse = '\n')`
+
+# Exercice N°2
+
+  La variable aléatoire **X** a étudié est le nombre de sinistres.
+D'abord, nous importons le fichier `nombresinistre30.csv` a notre session R on utilisons la fonction `read.csv` :
+```{r} 
+db.nbrsin <- read.csv2(p(path,"nombresinistre/nombresinistre", numero,".csv"))
+```
+  On affecte la deuxième colone de `db.nbrsin` a notre vecteur `x`
+```{r}
+x <- db.nbrsin$x
+```
+```{r include=FALSE}
+mv <- c(mean(x), var(x))
+lois <- list(binom="binomiale", pois="de poisson", nbinom="binomiale négative")
+truth <- c(mv[1]>mv[2], mv[1]==mv[2], mv[2]>mv[1])
+vc <- c(">","=","<")
+```
+  On a l'espérance et la variance de X sont :
+$$ \bar{X} = `r paste(mv[1],"", sep="")` \quad \text{ET} \quad  \hat\sigma^2_X = `r paste(mv[2],"", sep="")`  $$
+
+  On remarque que $$\bar{X} `r vc[truth]` \hat\sigma^2_X$$ donc la distribution la mieux ajustée peut être celle d'une loi **`r paste(lois[truth], sep="")`**.     
+              
+  J'appelle alors ma fonction `getgoodfit` qui retourne une liste contenant l'*estimation*, les *effectifs théorique*, le *vecteur de probabilté*, le *degré de liberté*, la *p-value*, et l'*$\tilde{\chi}$^2^* pour les lois données dans la colonne `lois` du résultat. Simultanément, cette fonction crée le diagramme à barres des *effectifs observés* et les rootogrammes suspendus pour chaque ajustement.
+```{r}
+result <- getgoodfit(x, short=FALSE, plots.as.vars = TRUE)
+```
+```{r, include=F}
+result$hasbest <- "bestdistr" %in% names(result)
+```
+  Les lois utilisées sont :
+```{r}
+result$lois
+```
+  On trace l'histogramme des nombres de sinistres **X**.
+
+```{r, fig.width=5, fig.cap="Distribution des Nombre de sinistres"}
+result$Xplot
+```
+
+
+```{r include=FALSE}
+out <- NULL
+for (loi in as.character(result$lois)) {
+  sloi <- lois[[loi]]
+  result[[loi]]$accepthyp <- "accepthyp" %in% names(result[[loi]]) && !is.na(result[[loi]]$accepthyp) && result[[loi]]$accepthyp
+  out = c(out, knit_expand('template.discrete.rmd'))
+}
+
+### *Conclusion :* La distribution la mieux ajustée est celle de la loi `r lois[[result$bestdistr]]`
+```
+
+`r paste(knit(text = out), collapse = '\n')`
+
+`r paste(knit(text = knit_expand('conclusion.rmd')), collapse = '\n')`
+

@@ -1,0 +1,86 @@
+---
+lang : "fr-FR"
+lof : true
+output:
+  pdf_document: 
+    toc : true
+    fig_caption: yes 
+    includes:  
+      in_header: preamble-latex.tex   
+  html_document:
+    toc : true
+    df_print: paged    
+params:
+  path : "~/Downloads/devoir20octobre2019/"
+  author: "Abdessabour MOUTIK"
+  date: "`r Sys.Date()`"
+  title: "Adjustr"
+title: "`r params$title`"
+date: "`r params$date`"
+author: "`r params$author`"
+---
+
+```{r load_packages, include=FALSE}
+library(knitr)
+library(adjustr)
+library(latex2exp)
+```
+
+```{r setup, include=FALSE}
+options(warn=-1)
+if(is_latex_output()) opts_chunk$set(dev="pdf")
+opts_chunk$set(echo = TRUE, message = FALSE, fig.align = 'center')
+path = params$path
+p <- function(..., sep=""){
+  paste(..., sep=sep, collapse = sep)
+}
+```
+
+`r if(is_latex_output()) "\\newpage" else ''`
+
+  La variable aléatoire **X** a étudié est les montants de sinistre.
+D'abord, nous importons le fichier `r path` à notre session R on utilisons la fonction `read.csv` :
+```{r} 
+db.mntsin <- read.csv2(path)
+```
+  On uttilisera la deuxième colonne.
+  
+  J'appelle alors ma fonction `getfitdistr` qui retourne une liste contenant l'*estimation*, la *p-value*, et si l'hypothèse nulle n'est pas rejetée, l'*AIC* pour les distributions données dans la colonne `distributions` du résultat. Simultanément, cette fonction crée les courbes des fonctions de distribution cumulative de **X** et des distributions ajustées.
+```{r eval=FALSE}
+result <- getfitdistr(db.mntsin[[2]], short=FALSE, plots.as.vars = TRUE)
+```
+```{r include=FALSE}
+result <- getfitdistr(db.mntsin[[2]], short=F, plots.as.vars = TRUE)
+distributions <- list(exponential="exponentielle", lognormal="log-normale", gamma="gamma")
+result$hasbest<- "bestdistr" %in% names(result)
+```
+  Les distributions utilisées sont :
+```{r}
+result$distributions
+```
+  On trace la courbe de la fonction de distribution cumulative empirique de **X**.
+```{r, fig.asp=.60, fig.cap="$\\hat{F}_{X}$ Fonction de distribution cumulative empirique de \\textbf{X}"}
+result$plot
+```
+  
+  On trace la courbe de la fonction de distribution cumulative empirique de **X** et des fonctions de distribution cumulative des distributions **`r paste(distributions,sep = "**, **")`**.
+```{r, fig.cap="$\\hat{F}_{X}$ et des F.D.Cs des distributions \\textbf{gamma}, \\textbf{exponentielle} et \\textbf{log-normale}"}
+result$combinedplot
+```
+
+`r if(result$hasbest) p("On remarque que la distribution de la loi **",distributions[[result$bestdistr]],"** est la distribution la mieux ajustée à la distribution de **X**.")`
+
+
+```{r include=FALSE}
+out = NULL
+for (loi in as.character(result$distributions)) {
+  result[[loi]]$accepthyp <- "accepthyp" %in% names(result[[loi]]) && !is.na(result[[loi]]$accepthyp) && result[[loi]]$accepthyp
+  sloi <- if(loi=="exponential") "exponentielle" else if(loi=="lognormal") "log-normale" else loi
+  #out = c(out, knit_expand(p(directory, '/template.rmd')))
+  out = c(out, knit_expand( 'template.rmd'))
+}
+```
+
+`r paste(knit(text = out), collapse = '\n')`
+
+`r paste(knit(text = knit_expand('conclusion.rmd')), collapse = '\n')`

@@ -15,5 +15,4 @@ Encoding: UTF-8
 LazyData: FALSE
 Depends: R (>= 3.1.0), ggplot2, MASS, vcd
 Imports: latex2exp, scales
-Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

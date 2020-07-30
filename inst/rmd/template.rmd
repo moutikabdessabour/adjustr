@@ -1,0 +1,18 @@
+
+# Ajustement par une distribution de loi {{sloi}}
+
+Après avoir utilisé `MASS::fitdistr(x, "{{loi}}")` pour obtenir la distribution {{sloi}} ajustée dans le corps de notre fonction `getfitdistr`. On retrouvera l'*estimation* suivantes:
+```{r}
+result${{loi}}$estimate
+```
+En utilisant le test de **Kolmogorov-Smirnov** on retrouvera la $$pvalue = `r paste(result${{loi}}$p.value,"")`$$
+
+on a donc $pvalue `r paste(if(result${{loi}}$accepthyp) ">" else "<","")` 5\%$
+```{r include=FALSE}
+  if(result${{loi}}$accepthyp){
+    text <- paste("On accepte l'hypothèse Nulle $\\mathcal{H}_0$. Donc la distribution de loi **{{sloi}}** permet de bien modéliser la distribution la valeur aléatoire **X**.\nLa fonction \`getfitdistr\` retourne la valeur de l'*AIC*\n$$ AIC = ",result${{loi}}$aic," $$  ")
+  }else{
+    text <- "On rejete l'hypthèse Nulle $\\mathcal{H}_0$. Donc la distribution de loi **{{sloi}}** ne permet pas de modèlisé celle de **X**.  "
+  }
+```
+`r paste(text,"  ")`

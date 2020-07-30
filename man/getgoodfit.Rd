@@ -25,8 +25,8 @@ getgoodfit(
 }
 \value{
 A list containing only the best fitted distribution when \code{short=TRUE} otherwise it'll contain all the adjusted distributions.
-If the best fitted distribution exists, it can be accessed through \code{result$bestdistr}, and those who validated the Null
-Hypothesis are found at \code{result$acceptedDistr} ordered from the lowest AIC to the highest.
+ If the best fitted distribution exists, it can be accessed through \code{result$bestdistr}, and those who validated the Null
+ Hypothesis are found at \code{result$acceptedDistr} ordered from the lowest AIC to the highest.
 }
 \description{
 Calculates the best fitted distribution for the given random variable

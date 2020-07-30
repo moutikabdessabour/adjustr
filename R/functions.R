@@ -2,18 +2,67 @@
 
 if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 
+rmd.templates <- function(){
+  system.file("rmd", package = "adjustr")
+}
+
+
+
+#' Generates Pdf or Html document containing the analysis of a \strong{discrete} random variable
+#'
+#' @param output_file The name of the output file. If using NULL then the output filename will be based on filename for the input file. If a filename is provided, a path to the output file can also be provided. Note that the output_dir option allows for specifying the output file path as well, however, if also specifying the path, the directory must exist. If output_file is specified but does not have a file extension, an extension will be automatically added according to the output format. To avoid the automatic file extension, put the output_file value in \code{\link{I()}}, e.g., \code{I('my-output')}.
+#' @param author The author to use in the template
+#' @param path The pate to the csv file. note that the column that contains the random variable values must be named x
+#' @param title The title to be used in the template
+#' @param date The date to be used in the template
+#' @param output_dir The output directory for the rendered output_file. This allows for a choice of an alternate directory to which the output file should be written (the default output directory of that of the input file). If a path is provided with a filename in output_file the directory specified here will take precedence. Please note that any directory path provided will create any necessary directories if they do not exist.
+#' @param output_format The R Markdown output format to convert to. The option "all" will render all formats defined within the file. The option can be the name of a format (e.g. "html_document") and that will render the document to that single format. One can also use a vector of format names to render to multiple formats. Alternatively, you can pass an output format object (e.g. \code{html_document()}). If using NULL then the output format is the first one defined in the YAML frontmatter in the input file (this defaults to HTML if no format is specified there).
+#' @param verbose An option to suppress printing of the pandoc command line.
+#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render()}}
+#'
+#' @inherit rmarkdown::render return
+#' @export
+#'
+#' @examples
+rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
+  #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
+  rmd.render("discrete", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
+}
+
+#' Generates Pdf or Html document containing the analysis of a \strong{continuous} random variable
+#'
+#' @param output_file The name of the output file. If using NULL then the output filename will be based on filename for the input file. If a filename is provided, a path to the output file can also be provided. Note that the output_dir option allows for specifying the output file path as well, however, if also specifying the path, the directory must exist. If output_file is specified but does not have a file extension, an extension will be automatically added according to the output format. To avoid the automatic file extension, put the output_file value in \code{\link{I()}}, e.g., \code{I('my-output')}.
+#' @param author The author to use in the template
+#' @param path The pate to the csv file. note that the column that contains the random variable values must be named x
+#' @param title The title to be used in the template
+#' @param date The date to be used in the template
+#' @param output_dir The output directory for the rendered output_file. This allows for a choice of an alternate directory to which the output file should be written (the default output directory of that of the input file). If a path is provided with a filename in output_file the directory specified here will take precedence. Please note that any directory path provided will create any necessary directories if they do not exist.
+#' @param output_format The R Markdown output format to convert to. The option "all" will render all formats defined within the file. The option can be the name of a format (e.g. "html_document") and that will render the document to that single format. One can also use a vector of format names to render to multiple formats. Alternatively, you can pass an output format object (e.g. \code{html_document()}). If using NULL then the output format is the first one defined in the YAML frontmatter in the input file (this defaults to HTML if no format is specified there).
+#' @param verbose An option to suppress printing of the pandoc command line.
+#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render()}}
+#'
+#' @inherit rmarkdown::render return
+#' @export
+rmd.continuous <- function(output_file, author, path, title="Ajustement d'une V.A", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
+  #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
+  rmd.render("continuous", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
+}
+
+rmd.render<-function(type, output_file, author, path, title, date, output_dir, output_format, quiet, ...){
+  rmarkdown::render(paste0(rmd.templates(),"/", type ,".Rmd"), output_format, output_file = output_file, output_dir = output_dir, quiet=quiet , params = list(author=author, path=path, date=date, title=title), ...)
+}
 
 #' @export
 print.continuous <- function(x, ...){
   class(x) <- "continuous"
 
-  cat("The parameter estimate", if(attr(x,"dirtibution")=="exponential") " " else "s (", p(x$estimate,sep=", "), if(attr(x,"dirtibution")=="exponential") "" else ")"
+  cat("The parameter estimate", if(attr(x,"distribution")=="exponential") " " else "s (", p(x$estimate,sep=", "), if(attr(x,"distribution")=="exponential") "" else ")"
       , " estimated by `ML`",sep='')
 
   cat("\nAIC = ",paste0( x$aic,", p.value = "), x$p.value, sep='')
   cat("\nWe", if(x$accepthyp) "accept" else "reject","the null hypothesis")
 
-  # print(p("\nObserved and fitted values for", attr(x,"dirtibution"),"distibution\n"))
+  # print(p("\nObserved and fitted values for", attr(x,"distribution"),"distribution\n"))
   # print(p("with parameters estimated by `", p(attr(x, 'method'), sep=" "), "` \n\n"))
   #
   # print(data.frame(count=x$count, observed=x$observed, fitted=x$fitted), row.names=F, ...)
@@ -51,9 +100,9 @@ getfitdistr <- function(x, xlab="Claim amounts", showplots=TRUE, short=TRUE, col
   #require(ggplot2)
   aic <- function(l,p) -1*l + 2*p
 
-  result <- list(dirtibutions=c("gamma", "lognormal", "exponential"))
+  result <- list(distributions=c("gamma", "lognormal", "exponential"))
 
-  result$acceptedDistr <-data.frame(dirtibution=character(0), aic=numeric(0), stringsAsFactors = FALSE)
+  result$acceptedDistr <-data.frame(distribution=character(0), aic=numeric(0), stringsAsFactors = FALSE)
 
   if(showplots || plots.as.vars){
     center <- theme(plot.title = element_text(hjust = 0.5), legend.position = c(0.5, 0.2))
@@ -66,25 +115,25 @@ getfitdistr <- function(x, xlab="Claim amounts", showplots=TRUE, short=TRUE, col
     if(plots.as.vars) result$plot <- mainplot
   }
 
-  for (dirtibution in result$dirtibutions) {
+  for (distribution in result$distributions) {
 
-    fit <- fitdistr(x, dirtibution)
-    result[[dirtibution]]$estimate <- fit$estimate
-    sloi <- p("p", if(dirtibution=="exponential") "exp" else if(dirtibution=="lognormal") "lnorm" else dirtibution )
+    fit <- fitdistr(x, distribution)
+    result[[distribution]]$estimate <- fit$estimate
+    sloi <- p("p", if(distribution=="exponential") "exp" else if(distribution=="lognormal") "lnorm" else distribution )
 
-    ksstat <- do.call(ks.test, c(list(x, sloi), as.vector(result[[dirtibution]]$estimate)))
+    ksstat <- do.call(ks.test, c(list(x, sloi), as.vector(result[[distribution]]$estimate)))
 
-    result[[dirtibution]]$p.value <- ksstat$p.value
-    result[[dirtibution]]$accepthyp <- ksstat$p.value > .05
+    result[[distribution]]$p.value <- ksstat$p.value
+    result[[distribution]]$accepthyp <- ksstat$p.value > .05
 
-    result[[dirtibution]]$aic <- aic(fit$loglik, if(dirtibution=="exponential") 1 else 2)
+    result[[distribution]]$aic <- aic(fit$loglik, if(distribution=="exponential") 1 else 2)
 
-    if(result[[dirtibution]]$accepthyp){
-      result$acceptedDistr[1,] <- c(dirtibution, result[[dirtibution]]$aic)
+    if(result[[distribution]]$accepthyp){
+      result$acceptedDistr[1,] <- c(distribution, result[[distribution]]$aic)
     }
 
-    class(result[[dirtibution]]) <- c("continuous", "list")
-    attr(result[[dirtibution]], "dirtibution") <- switch(dirtibution,
+    class(result[[distribution]]) <- c("continuous", "list")
+    attr(result[[distribution]], "distribution") <- switch(distribution,
                                          "exponential"="exponential",
                                          "lognormal"="log-normal",
                                          "gamma"="gamma")
@@ -103,15 +152,15 @@ getfitdistr <- function(x, xlab="Claim amounts", showplots=TRUE, short=TRUE, col
     if(showplots)  print(combinedplot)
   }
 
-  #if(showplots && !detailed.curves) legend(x=11.5,y=0.35, legend=c("fn de r. de x", "fn de r. de la dirtibution gamma", "fn de r. de la dirtibution lognormal", "fn de r. de la dirtibution exponentiel"), lty=1:4, col = c("black", as.character(color)))
+  #if(showplots && !detailed.curves) legend(x=11.5,y=0.35, legend=c("fn de r. de x", "fn de r. de la distribution gamma", "fn de r. de la distribution lognormal", "fn de r. de la distribution exponentiel"), lty=1:4, col = c("black", as.character(color)))
 
-  if (length(result$acceptedDistr$dirtibution)==0) {print("All the distributions failed to confirm the null hypothesis");return(result)}
+  if (length(result$acceptedDistr$distribution)==0) {print("All the distributions failed to confirm the null hypothesis");return(result)}
 
-  result$acceptedDistr <- result$acceptedDistr[with(result$acceptedDistr,order(-as.numeric(aic), dirtibution)),]
-  result$bestdistr <- result$acceptedDistr[1,"dirtibution"]
+  result$acceptedDistr <- result$acceptedDistr[with(result$acceptedDistr,order(-as.numeric(aic), distribution)),]
+  result$bestdistr <- result$acceptedDistr[1,"distribution"]
   if(short) {
-    dirtibution=result$bestdistr;
-    c(list(dirtibution=dirtibution), result[[dirtibution]][names(result[[dirtibution]]) != "accepthyp"])
+    distribution=result$bestdistr;
+    c(list(distribution=distribution), result[[distribution]][names(result[[distribution]]) != "accepthyp"])
   }  else result
 }
 
@@ -140,33 +189,33 @@ getfitdistr <- function(x, xlab="Claim amounts", showplots=TRUE, short=TRUE, col
 getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Number of claims"){
   #library(vcd)
   #require(ggplot2)
-  result <- list(dirtibutions=c("pois", "binom", "nbinom"))
+  result <- list(distributions=c("pois", "binom", "nbinom"))
   default.length <- length(table(x))-1
   moy = mean(x)
   v = var(x)
 
   center <- theme(plot.title = element_text(hjust = 0.5))
 
-  result$acceptedDistr <-data.frame(dirtibution=character(0), Xsquared=numeric(0), stringsAsFactors = FALSE)
+  result$acceptedDistr <-data.frame(distribution=character(0), Xsquared=numeric(0), stringsAsFactors = FALSE)
 
   if(showplots || plots.as.vars) {
     pp <- ggplot(data.frame(var=as.numeric(table(x)), l=0:(length(table(x))-1)),aes(x=l, y=var)) + geom_bar(stat="identity", colour = 'black', fill='#eeeeee') + labs(title=p("Distribution of ", xlab), x=xlab, y="Frequency") + center
     if(plots.as.vars) result$Xplot <- pp
     if(showplots) print(pp)
   }
-  for (dirtibution in result$dirtibutions) {
-    if(dirtibution!="pois"){
-      par <- list( size = getsize(moy, v, dirtibution) )
-      if(par$size<0 || is.na(par$size)) {print(p("Error occured whilst estimating the size n = ", par$size, " of the ", if(dirtibution=="nbinom") "negative binomial" else "binomial", " distribution.")); par$size <- default.length}
-      fit <- goodfit(x, dirtibution, par = par)
+  for (distribution in result$distributions) {
+    if(distribution!="pois"){
+      par <- list( size = getsize(moy, v, distribution) )
+      if(par$size<0 || is.na(par$size)) {print(p("Error occured whilst estimating the size n = ", par$size, " of the ", if(distribution=="nbinom") "negative binomial" else "binomial", " distribution.")); par$size <- default.length}
+      fit <- goodfit(x, distribution, par = par)
     } else {
-      fit <- goodfit(x, dirtibution)
+      fit <- goodfit(x, distribution)
     }
 
     #if(showplots) {
-    #   sloi <- TeX(p("Ajustement par une distrubition  ", if(dirtibution=="pois") "de Poisson" else if(dirtibution=="nbinom") "Binomiale négative" else "Binomiale","(", p(round(as.numeric(fit$par),digits=2), sep=", "),")"));#sapply(fit$par, function(x) round(x,digits=2))
+    #   sloi <- TeX(p("Ajustement par une distrubition  ", if(distribution=="pois") "de Poisson" else if(distribution=="nbinom") "Binomiale négative" else "Binomiale","(", p(round(as.numeric(fit$par),digits=2), sep=", "),")"));#sapply(fit$par, function(x) round(x,digits=2))
     #   pp <- ggplot(data=data.frame( number=fit$count, fitted=sqrt(fit$fitted), observed=sqrt(fit$observed)), aes(x=number, y=fitted)) + geom_bar(aes(y=observed), stat="identity", colour="lightcyan") + geom_line(size=2,colour="firebrick")  + geom_errorbar(aes(ymin = observed, ymax = fitted), colour="#7aadd1", size = .85, width=0.25) + geom_point(size=4, colour="grey") + labs(title=sloi, x=xlab, y=TeX("$\\sqrt{Frequency}$")) + center
-    #   if(plots.as.vars) result[[dirtibution]]$plot <- pp
+    #   if(plots.as.vars) result[[distribution]]$plot <- pp
     #   print(pp)
     #   rm(pp)
     # }
@@ -181,10 +230,10 @@ getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Number
       l <- l-1
     }
 
-    distr <- do.call(p("d", dirtibution), c(list(x=0:(l-2)),list(lambda=fit$par$lambda)[dirtibution=="pois"], list(size=fit$par$size, prob=fit$par$prob)[dirtibution!="pois"]))
+    distr <- do.call(p("d", distribution), c(list(x=0:(l-2)),list(lambda=fit$par$lambda)[distribution=="pois"], list(size=fit$par$size, prob=fit$par$prob)[distribution!="pois"]))
     prob <- c(distr, 1-sum(distr))
 
-    df <- l-(if(dirtibution=="pois") 2 else 3)
+    df <- l-(if(distribution=="pois") 2 else 3)
     df <- if(df==0) 1 else df
     chisqstat <- chisq.test(observed, p=prob)
 
@@ -196,40 +245,40 @@ getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Number
     count <- c(0:(l-1))
 
     if(!is.na(accepthyp)){
-      if(accepthyp) result$acceptedDistr[1,] <- c(dirtibution, Xsquared)
+      if(accepthyp) result$acceptedDistr[1,] <- c(distribution, Xsquared)
     }
-    result[[dirtibution]] <- list(observed=fit$observed, count = fit$count, fitted=fit$fitted, prob = prob )
+    result[[distribution]] <- list(observed=fit$observed, count = fit$count, fitted=fit$fitted, prob = prob )
 
-    result[[dirtibution]]$estimate <- fit$par
-    result[[dirtibution]]$p.value <- p.value
-    result[[dirtibution]]$Xsquared <- Xsquared
-    result[[dirtibution]]$df <- df
-    result[[dirtibution]]$accepthyp <- accepthyp
-    result[[dirtibution]]$length <- l
-    class(result[[dirtibution]]) <- c("discrete", "list")
-    attr(result[[dirtibution]], "dirtibution") <- switch(dirtibution,
+    result[[distribution]]$estimate <- fit$par
+    result[[distribution]]$p.value <- p.value
+    result[[distribution]]$Xsquared <- Xsquared
+    result[[distribution]]$df <- df
+    result[[distribution]]$accepthyp <- accepthyp
+    result[[distribution]]$length <- l
+    class(result[[distribution]]) <- c("discrete", "list")
+    attr(result[[distribution]], "distribution") <- switch(distribution,
                                          "pois"="poisson",
                                          "binom"="binomial",
                                          "nbinom"="negative binomial")
-    attr(result[[dirtibution]], 'method') <- fit$method
-    attr(result[[dirtibution]], 'xlab') <- xlab
+    attr(result[[distribution]], 'method') <- fit$method
+    attr(result[[distribution]], 'xlab') <- xlab
     if(showplots || plots.as.vars){
-      plot <- autoplot(result[[dirtibution]])
-      if(plots.as.vars) result[[dirtibution]]$plot = plot
+      plot <- autoplot(result[[distribution]])
+      if(plots.as.vars) result[[distribution]]$plot = plot
       if(showplots) print(plot)
     }
-    result[[dirtibution]]$observed = observed
-    result[[dirtibution]]$count = count
-    result[[dirtibution]]$fitted = fitted
+    result[[distribution]]$observed = observed
+    result[[distribution]]$count = count
+    result[[distribution]]$fitted = fitted
   }
 
-  if (length(result$acceptedDistr$dirtibution)==0) {print("All the distributions failed to confirm the null hypothesis");return(result)}
+  if (length(result$acceptedDistr$distribution)==0) {print("All the distributions failed to confirm the null hypothesis");return(result)}
 
-  result$acceptedDistr <- result$acceptedDistr[with(result$acceptedDistr, order(-as.numeric(Xsquared), dirtibution)),]
-  result$bestdistr <- result$acceptedDistr[1,"dirtibution"]
+  result$acceptedDistr <- result$acceptedDistr[with(result$acceptedDistr, order(-as.numeric(Xsquared), distribution)),]
+  result$bestdistr <- result$acceptedDistr[1,"distribution"]
 
   if(short) {
-     result[[result$bestdistr]]#[names(result[[dirtibution]])!= "accepthyp"])
+     result[[result$bestdistr]]#[names(result[[distribution]])!= "accepthyp"])
   }  else result
 }
 
@@ -238,13 +287,13 @@ getgoodfit <- function(x, showplots=F, short=TRUE, plots.as.vars=F, xlab="Number
 sumlast <- function(y,l=length(y)) {l<-l-2;c(y[1:l], sum(y[(l+1):(l+2)]))}
 
 
-getsize <- function(moyenne, variance, dirtibution) {
+getsize <- function(moyenne, variance, distribution) {
   v = as.numeric(variance)
   m = as.numeric(moyenne)
   n <- NA
-  if(dirtibution=="nbinom" && m<v){
+  if(distribution=="nbinom" && m<v){
     n <- (log((m/v)*m)) / log(1-(m/v))
-  }else if(dirtibution=="binom" && m!=v){
+  }else if(distribution=="binom" && m!=v){
     n <- round(m/(1-(v/m)))
   }
   n
@@ -277,14 +326,14 @@ autoplot.discrete<- function(object,
 print.discrete <- function(x, ...){
   class(x) <- "discrete"
 
-  cat("\nObserved and fitted values for", attr(x,"dirtibution"),"distibution\n")
-  cat("with parameter", if(attr(x,"dirtibution")=="poisson") " " else "s (", p(x$estimate,sep=", "), if(attr(x,"dirtibution")=="poisson") "" else ")", " estimated by ",p("`", p(attr(x, 'method'), sep=" "),"`"), "\n\n", sep='')
+  cat("\nObserved and fitted values for", attr(x,"distribution"),"distribution\n")
+  cat("with parameter", if(attr(x,"distribution")=="poisson") " " else "s (", p(x$estimate,sep=", "), if(attr(x,"distribution")=="poisson") "" else ")", " estimated by ",p("`", p(attr(x, 'method'), sep=" "),"`"), "\n\n", sep='')
 
   print(data.frame(count=x$count, observed=x$observed, fitted=x$fitted,prob=x$prob), row.names=F, ...)
   cat("\nX-squared = ", x$Xsquared, ", df = ",x$df, ", p.value = ", x$p.value, sep='')
   cat("\nWe", if(x$accepthyp) "accept" else "reject","the null hypothesis")
 
-  # print(p("\nObserved and fitted values for", attr(x,"dirtibution"),"distibution\n"))
+  # print(p("\nObserved and fitted values for", attr(x,"distribution"),"distribution\n"))
   # print(p("with parameters estimated by `", p(attr(x, 'method'), sep=" "), "` \n\n"))
   #
   # print(data.frame(count=x$count, observed=x$observed, fitted=x$fitted), row.names=F, ...)
@@ -313,9 +362,9 @@ p <- function(..., sep='') {
   paste(..., sep=sep, collapse=sep)
 }
 
-# esmtimate= result[[dirtibution]]$estimate, Xsquared=result[[dirtibution]]$Xsquared, observed=result[[dirtibution]]$observed, count=result[[dirtibution]]$count,df=result[[dirtibution]]$df,fitted=result[[dirtibution]]$fitted, p.value=result[[dirtibution]]$p.value)
+# esmtimate= result[[distribution]]$estimate, Xsquared=result[[distribution]]$Xsquared, observed=result[[distribution]]$observed, count=result[[distribution]]$count,df=result[[distribution]]$df,fitted=result[[distribution]]$fitted, p.value=result[[distribution]]$p.value)
 
-#if(detailed.curves) {plot(ecdf(x), main = );legend(x=11.5,y=0.35, legend=c("fn de r. de x", p("fn de r. de la dirtibution ", dirtibution) ), lty=1:2, col = c("black", color[[dirtibution]]))}
+#if(detailed.curves) {plot(ecdf(x), main = );legend(x=11.5,y=0.35, legend=c("fn de r. de x", p("fn de r. de la distribution ", distribution) ), lty=1:2, col = c("black", color[[distribution]]))}
 
 #pp<-ggplot(df, aes(x=x, y=y)) + stat_ecdf(aes(z), colour='black', linetype=2)
 #ggdistribution(pgamma, seq(0, max(x),length.out= length(x)), shape=result$gamma$estimate[[1]],rate=result$gamma$estimate[[2]], colour = 'red', p=pp)
