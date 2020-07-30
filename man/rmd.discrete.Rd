@@ -21,7 +21,7 @@ rmd.discrete(
 
 \item{author}{The author to use in the template}
 
-\item{path}{The pate to the csv file. note that the column that contains the random variable values must be named x}
+\item{path}{The path to the csv file. note that the column that contains the random variable values must be named x}
 
 \item{title}{The title to be used in the template}
 
