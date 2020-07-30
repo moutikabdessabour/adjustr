@@ -6,9 +6,9 @@ Authors@R:
            family = "Moutik",
            role = c("aut", "cre"),
            email = "a.moutik@insea.ac.ma")
-Description: Ajustement de distrubition d'une Variable aléatoire. 
-        Si elle est continue par une loi exponentielle, log-normale ou gamma. 
-        Sinon avec l'une des lois discrètes suivantes: poisson, binomiale ou binomiale négative.
+Description: Fitting the distribution of random variable.
+             if it's a continuous random variable, then it'll be fitted using an exponantial, log-normal or a gamma distribution. Uses MASS::fitdistr under the hood.
+             Otherwise it'll be fitted by using one of these discrete distributions: poisson, binomial, negative binomial. Uses vcd::goodfit under the hood.
 Maintainer: Abdessabour MOUTIK <a.moutik@insea.ac.ma>
 License: GPL-2
 Encoding: UTF-8
