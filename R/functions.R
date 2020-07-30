@@ -19,7 +19,7 @@ rmd.templates <- function(){
 #' @param verbose An option to suppress printing of the pandoc command line.
 #' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render}}
 #'
-#' @return
+#' @inherit rmarkdown::render return
 #' @export
 #'
 #' @examples
@@ -45,7 +45,7 @@ rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A d
 #' @param verbose An option to suppress printing of the pandoc command line.
 #' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render}}
 #'
-#' @return
+#' @inherit rmarkdown::render return
 #' @export
 #'
 #' @examples
