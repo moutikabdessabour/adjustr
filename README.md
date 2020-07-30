@@ -17,6 +17,11 @@ The development version from [GitHub](https://github.com/) with:
 devtools::install_github("moutikabdessabour/adjustr")
 ```
 
+## Motivation
+
+I actually wrote these functions for a homework in order to simplify the
+process, now here we are :smiley:.
+
 # Using it
 
 The package is made up of two main functions.
