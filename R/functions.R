@@ -12,42 +12,44 @@ rmd.templates <- function(){
 #'
 #' @param output_file The name of the output file. If using NULL then the output filename will be based on filename for the input file. If a filename is provided, a path to the output file can also be provided. Note that the output_dir option allows for specifying the output file path as well, however, if also specifying the path, the directory must exist. If output_file is specified but does not have a file extension, an extension will be automatically added according to the output format. To avoid the automatic file extension, put the output_file value in \code{\link{I()}}, e.g., \code{I('my-output')}.
 #' @param author The author to use in the template
-#' @param path The path to the csv file. note that the column that contains the random variable values must be named x
-#' @param title The title to be used in the template
+#' @param path The pate to the csv file. note that the column that contains the random variable values must be named x
 #' @param date The date to be used in the template
 #' @param output_dir The output directory for the rendered output_file. This allows for a choice of an alternate directory to which the output file should be written (the default output directory of that of the input file). If a path is provided with a filename in output_file the directory specified here will take precedence. Please note that any directory path provided will create any necessary directories if they do not exist.
 #' @param output_format The R Markdown output format to convert to. The option "all" will render all formats defined within the file. The option can be the name of a format (e.g. "html_document") and that will render the document to that single format. One can also use a vector of format names to render to multiple formats. Alternatively, you can pass an output format object (e.g. \code{html_document()}). If using NULL then the output format is the first one defined in the YAML frontmatter in the input file (this defaults to HTML if no format is specified there).
 #' @param verbose An option to suppress printing of the pandoc command line.
-#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render()}}
+#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render}}
 #'
-#' @inherit rmarkdown::render return
+#' @return
 #' @export
-rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
-      #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
-  rmd.render("discrete", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
+#'
+#' @examples
+rmd.discrete<- function(output_file, author, path, date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
+  #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
+  rmd.render("discrete", output_file, author, path, date, output_dir, output_format, quiet=!verbose, ...)
 }
 
 #' Generates Pdf or Html document containing the analysis of a \strong{continuous} random variable
 #'
 #' @param output_file The name of the output file. If using NULL then the output filename will be based on filename for the input file. If a filename is provided, a path to the output file can also be provided. Note that the output_dir option allows for specifying the output file path as well, however, if also specifying the path, the directory must exist. If output_file is specified but does not have a file extension, an extension will be automatically added according to the output format. To avoid the automatic file extension, put the output_file value in \code{\link{I()}}, e.g., \code{I('my-output')}.
 #' @param author The author to use in the template
-#' @param path The path to the csv file. note that the column that contains the random variable values must be named x
-#' @param title The title to be used in the template
+#' @param path The pate to the csv file. note that the column that contains the random variable values must be named x
 #' @param date The date to be used in the template
 #' @param output_dir The output directory for the rendered output_file. This allows for a choice of an alternate directory to which the output file should be written (the default output directory of that of the input file). If a path is provided with a filename in output_file the directory specified here will take precedence. Please note that any directory path provided will create any necessary directories if they do not exist.
 #' @param output_format The R Markdown output format to convert to. The option "all" will render all formats defined within the file. The option can be the name of a format (e.g. "html_document") and that will render the document to that single format. One can also use a vector of format names to render to multiple formats. Alternatively, you can pass an output format object (e.g. \code{html_document()}). If using NULL then the output format is the first one defined in the YAML frontmatter in the input file (this defaults to HTML if no format is specified there).
 #' @param verbose An option to suppress printing of the pandoc command line.
-#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render()}}
+#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render}}
 #'
-#' @inherit rmarkdown::render return
+#' @return
 #' @export
-rmd.continuous <- function(output_file, author, path, title="Ajustement d'une V.A", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
+#'
+#' @examples
+rmd.continuous <- function(output_file, author, path, date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
   #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
-  rmd.render("continuous", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
+  rmd.render("continuous", output_file, author, path, date, output_dir, output_format, quiet=!verbose, ...)
 }
 
-rmd.render<-function(type, output_file, author, path, title, date, output_dir, output_format, quiet, ...){
-  rmarkdown::render(paste0(rmd.templates(),"/", type ,".Rmd"), output_format, output_file = output_file, output_dir = output_dir, quiet=quiet , params = list(author=author, path=path, date=date, title=title), ...)
+rmd.render<-function(type, output_file, author, path, date, output_dir, output_format, quiet, ...){
+  rmarkdown::render(paste0(rmd.templates(),"/", type ,".Rmd"), output_format, output_file = output_file, output_dir = output_dir, quiet=quiet , params = list(author=author, path=path, date=date), ...)
 }
 
 #' @export
@@ -60,7 +62,7 @@ print.continuous <- function(x, ...){
   cat("\nAIC = ",paste0( x$aic,", p.value = "), x$p.value, sep='')
   cat("\nWe", if(x$accepthyp) "accept" else "reject","the null hypothesis")
 
-  # print(p("\nObserved and fitted values for", attr(x,"distribution"),"distribution\n"))
+  # print(p("\nObserved and fitted values for", attr(x,"distribution"),"distibution\n"))
   # print(p("with parameters estimated by `", p(attr(x, 'method'), sep=" "), "` \n\n"))
   #
   # print(data.frame(count=x$count, observed=x$observed, fitted=x$fitted), row.names=F, ...)
@@ -324,14 +326,14 @@ autoplot.discrete<- function(object,
 print.discrete <- function(x, ...){
   class(x) <- "discrete"
 
-  cat("\nObserved and fitted values for", attr(x,"distribution"),"distribution\n")
+  cat("\nObserved and fitted values for", attr(x,"distribution"),"distibution\n")
   cat("with parameter", if(attr(x,"distribution")=="poisson") " " else "s (", p(x$estimate,sep=", "), if(attr(x,"distribution")=="poisson") "" else ")", " estimated by ",p("`", p(attr(x, 'method'), sep=" "),"`"), "\n\n", sep='')
 
   print(data.frame(count=x$count, observed=x$observed, fitted=x$fitted,prob=x$prob), row.names=F, ...)
   cat("\nX-squared = ", x$Xsquared, ", df = ",x$df, ", p.value = ", x$p.value, sep='')
   cat("\nWe", if(x$accepthyp) "accept" else "reject","the null hypothesis")
 
-  # print(p("\nObserved and fitted values for", attr(x,"distribution"),"distribution\n"))
+  # print(p("\nObserved and fitted values for", attr(x,"distribution"),"distibution\n"))
   # print(p("with parameters estimated by `", p(attr(x, 'method'), sep=" "), "` \n\n"))
   #
   # print(data.frame(count=x$count, observed=x$observed, fitted=x$fitted), row.names=F, ...)
@@ -359,6 +361,37 @@ print.discrete <- function(x, ...){
 p <- function(..., sep='') {
   paste(..., sep=sep, collapse=sep)
 }
+
+
+# register_s3_method <- function(pkg, generic, class, fun = NULL) {
+#   stopifnot(is.character(pkg), length(pkg) == 1)
+#   stopifnot(is.character(generic), length(generic) == 1)
+#   stopifnot(is.character(class), length(class) == 1)
+#
+#   if (is.null(fun)) {
+#     fun <- get(paste0(generic, ".", class), envir = parent.frame())
+#   } else {
+#     stopifnot(is.function(fun))
+#   }
+#
+#   if (pkg %in% loadedNamespaces()) {
+#     registerS3method(generic, class, fun, envir = asNamespace(pkg))
+#   }
+#
+#   # Always register hook in case package is later unloaded & reloaded
+#   setHook(
+#     packageEvent(pkg, "onLoad"),
+#     function(...) {
+#       registerS3method(generic, class, fun, envir = asNamespace(pkg))
+#     }
+#   )
+# }
+#
+#
+# .onLoad <- function(...) {
+#   register_s3_method("knitr", "knit_print", "discrete")
+# }
+
 
 # esmtimate= result[[distribution]]$estimate, Xsquared=result[[distribution]]$Xsquared, observed=result[[distribution]]$observed, count=result[[distribution]]$count,df=result[[distribution]]$df,fitted=result[[distribution]]$fitted, p.value=result[[distribution]]$p.value)
 

@@ -20,7 +20,7 @@ On affiche les valeurs de **X**, les *effectifs théoriques*, les *effectifs obs
 result${{loi}}
 ```
 ```{r "{{loi}}-9", echo=FALSE, eval=T}
-print(result${{loi}})
+knit_print(result${{loi}}, format= if(is_latex_output()) "latex" else "html", col.names=c("X", "Obserevé", "Ajusté", "Probabilité"), header_col=c(" "=1, "Effectif"=2, " "), digits=3)
 #data.frame(result${{loi}}[c("count", "fitted", "observed", "prob")])
 ```
 

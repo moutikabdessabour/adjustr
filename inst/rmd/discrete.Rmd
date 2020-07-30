@@ -10,6 +10,18 @@ output:
   html_document:
     toc : true
     df_print: paged    
+header-includes:
+  - \usepackage[table]{xcolor}
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
 params:
   path : "~/Downloads/devoir20octobre2019/montantsinistres/montantssinistre30.csv"
   author: "Abdessabour MOUTIK"
@@ -28,12 +40,23 @@ library(latex2exp)
 
 ```{r setup, include=FALSE}
 options(warn=-1)
-knitr::opts_chunk$set(echo = TRUE, message = FALSE,  fig.align = 'center')
+opts_chunk$set(echo = TRUE, message = FALSE,  fig.align = 'center')
 if(is_latex_output()) opts_chunk$set(dev="pdf")
 path = params$path
 p <- function(..., sep=""){
   paste(..., sep=sep, collapse = sep)
 }
+
+knit_print.discrete <- function(x, header_col, ...){
+  x<-kableExtra::kable_styling(kableExtra::row_spec(
+    kable(
+      data.frame(count=x$count, observed=x$observed, fitted=x$fitted,prob=x$prob),      booktabs=is_latex_output()
+      , ...)
+    , row=0, align="c", bold=T)
+    , position="center")
+  asis_output(if(is.null(header_col)) x else  kableExtra::add_header_above(x, header_col, bold=T, italic=T) )
+}
+registerS3method("knit_print", "discrete", knit_print.discrete)
 ```
 
 
@@ -84,7 +107,7 @@ for (loi in as.character(result$distributions)) {
   result[[loi]]$accepthyp <- "accepthyp" %in% names(result[[loi]]) && !is.na(result[[loi]]$accepthyp) && result[[loi]]$accepthyp
   out = c(out, knit_expand('template.discrete.rmd'))
 }
-
+#print(out)
 ### *Conclusion :* La distribution la mieux ajustée est celle de la loi `r distributions[[result$bestdistr]]`
 ```
 
