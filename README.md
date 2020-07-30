@@ -143,6 +143,6 @@ check the following links
 
 # Questions?
 
-Confused by anything (there’s a lot to be confused by)? [Open an issue
-on github](https://github.com/moutikabdessabour/adjustr/issues/new) and
-let me know.
+Confused by anything? [Open an issue on
+github](https://github.com/moutikabdessabour/adjustr/issues/new) and let
+me know.

@@ -137,9 +137,9 @@ The available arguments are:
 | `verbose` | An option to suppress printing of the pandoc command line. |
 | `...` | Additional arguments to be passed to `rmarkdown::render()` |
 
-**NB** The `Rmd` templates are only in french :cry: To see the results check the following links
+**NB** The `Rmd` templates are only in french :cry:  To see the results check the following links
 `r paste0(mgsub::mgsub(paste0('(https://moutikabdessabour.github.io/adjustr/inst/examples/',c("continuous", "continuous", "discrete", "discrete"), c(".html)", ".pdf)")), "^(.+/(.+?)\\.(.{3,4})\\))$", "\n- [\\2 format \\3]\\1"))`
 
 # Questions?
 
-Confused by anything (there's a lot to be confused by)? [Open an issue on github](https://github.com/moutikabdessabour/adjustr/issues/new) and let me know.
+Confused by anything? [Open an issue on github](https://github.com/moutikabdessabour/adjustr/issues/new) and let me know.
