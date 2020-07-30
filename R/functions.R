@@ -25,7 +25,7 @@ rmd.templates <- function(){
 #'
 #' @examples
 rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
-  #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
+      #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
   rmd.render("discrete", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
 }
 
