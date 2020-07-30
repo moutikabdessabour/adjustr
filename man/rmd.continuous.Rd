@@ -33,7 +33,7 @@ rmd.continuous(
 
 \item{verbose}{An option to suppress printing of the pandoc command line.}
 
-\item{...}{Additional arguments to be passed to \code{\link{rmarkdown::render()}}}
+\item{...}{Additional arguments to be passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}}
 }
 \value{
 When \code{run_pandoc = TRUE}, the compiled document is written into
@@ -56,5 +56,5 @@ rmd.continuous("continuous",
 }
 }
 \seealso{
-\code{\link{rmarkdown::render()}} which this function wraps
+\code{\link[rmarkdown:render]{rmarkdown::render()}} which this function wraps
 }
