@@ -21,6 +21,14 @@ rmd.templates <- function(){
 #'
 #' @return
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' rmd.discrete("discrete",
+#'                 author="Abdessabour MOUTIK",
+#'                 path="~/Downloads/devoir20octobre2019/nombresinistre/nombresinistre18.csv",
+#'                  output_format = "all", verbose=T)
+#' }
 rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A discrète par adjustr", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
   #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
   rmd.render("discrete", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
@@ -39,6 +47,15 @@ rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A d
 #'
 #' @return
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' rmd.continuous("continuous",
+#'                author="Abdessabour MOUTIK",
+#'                path="~/Downloads/devoir20octobre2019/montantsisnitres/montantssinistre12.csv",
+#'                output_format = "all",
+#'                verbose=T)
+#' }
 rmd.continuous <- function(output_file, author, path, title="Ajustement d'une V.A continue par adjustr", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
   #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
   rmd.render("continuous", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
