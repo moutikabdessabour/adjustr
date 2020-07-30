@@ -8,6 +8,7 @@ rmd.continuous(
   output_file,
   author,
   path,
+  title = "Ajustement d'une V.A continue par adjustr",
   date = Sys.Date(),
   output_dir = getwd(),
   output_format,

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  30 JUL 2020 00:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  30 JUL 2020 00:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1055,7 +1055,7 @@ Package rerunfilecheck Info: File `discrete.out' has not changed.
 Here is how much of TeX's memory you used:
  15631 strings out of 492616
  228597 string characters out of 6129482
- 363517 words of memory out of 5000000
+ 363740 words of memory out of 5000000
  19223 multiletter control sequences out of 15000+600000
  87021 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1077,7 +1077,7 @@ usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmri7.pfb></usr/local/t
 exlive/2019/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/201
 9/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/texlive/2019/texmf-di
 st/fonts/type1/public/lm/lmtt10.pfb>
-Output written on discrete.pdf (8 pages, 301807 bytes).
+Output written on discrete.pdf (8 pages, 303994 bytes).
 PDF statistics:
  188 PDF objects out of 1000 (max. 8388607)
  149 compressed objects within 2 object streams

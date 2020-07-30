@@ -21,11 +21,9 @@ rmd.templates <- function(){
 #'
 #' @return
 #' @export
-#'
-#' @examples
-rmd.discrete<- function(output_file, author, path, date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
+rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A discrète par adjustr", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
   #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
-  rmd.render("discrete", output_file, author, path, date, output_dir, output_format, quiet=!verbose, ...)
+  rmd.render("discrete", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
 }
 
 #' Generates Pdf or Html document containing the analysis of a \strong{continuous} random variable
@@ -41,15 +39,13 @@ rmd.discrete<- function(output_file, author, path, date=Sys.Date(), output_dir=g
 #'
 #' @return
 #' @export
-#'
-#' @examples
-rmd.continuous <- function(output_file, author, path, date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
+rmd.continuous <- function(output_file, author, path, title="Ajustement d'une V.A continue par adjustr", date=Sys.Date(), output_dir=getwd(), output_format, verbose=F, ...){
   #rmarkdown::render(paste0(rmd.templates,"/discrete.Rmd"), output_file = name, output_dir = "DLs", quiet=quiet , params = list(author=author, path=path), ...)
-  rmd.render("continuous", output_file, author, path, date, output_dir, output_format, quiet=!verbose, ...)
+  rmd.render("continuous", output_file, author, path, title, date, output_dir, output_format, quiet=!verbose, ...)
 }
 
-rmd.render<-function(type, output_file, author, path, date, output_dir, output_format, quiet, ...){
-  rmarkdown::render(paste0(rmd.templates(),"/", type ,".Rmd"), output_format, output_file = output_file, output_dir = output_dir, quiet=quiet , params = list(author=author, path=path, date=date), ...)
+rmd.render<-function(type, output_file, author, path, title, date, output_dir, output_format, quiet, ...){
+  rmarkdown::render(paste0(rmd.templates(),"/", type ,".Rmd"), output_format, output_file = output_file, output_dir = output_dir, quiet=quiet , params = list(author=author, path=path, date=date, title=title), ...)
 }
 
 #' @export

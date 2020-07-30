@@ -14,7 +14,7 @@ params:
   path : "~/Downloads/devoir20octobre2019/"
   author: "Abdessabour MOUTIK"
   date: "`r Sys.Date()`"
-  title: "Adjustr"
+  title: "Ajustement d'une V.A continue par adjustr"
 title: "`r params$title`"
 date: "`r params$date`"
 author: "`r params$author`"
@@ -59,12 +59,12 @@ result$hasbest<- "bestdistr" %in% names(result)
 result$distributions
 ```
   On trace la courbe de la fonction de distribution cumulative empirique de **X**.
-```{r, fig.asp=.60, fig.cap="$\\hat{F}_{X}$ Fonction de distribution cumulative empirique de \\textbf{X}"}
+```{r, fig.asp=.60, fig.cap="$\\hat{F}_{X}$ Fonction de distribution cumulative empirique de $\\mathbf{X}$"}
 result$plot
 ```
   
   On trace la courbe de la fonction de distribution cumulative empirique de **X** et des fonctions de distribution cumulative des distributions **`r paste(distributions,sep = "**, **")`**.
-```{r, fig.cap="$\\hat{F}_{X}$ et des F.D.Cs des distributions \\textbf{gamma}, \\textbf{exponentielle} et \\textbf{log-normale}"}
+```{r, fig.cap="$\\hat{F}_{X}$ et des F.D.Cs des distributions $\\mathbf{gamma}$, $\\mathbf{exponentielle}$ et $\\mathbf{log-normale}$"}
 result$combinedplot
 ```
 

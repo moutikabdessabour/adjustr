@@ -8,7 +8,7 @@
                   "nbinom"="NB",
                   "lognormal"="LN",
                   "gamma"="\\Gamma",
-                  "exponential"="Exp")
+                  "exponential"="EXP")
     
   }
   conclusion <- if(!result$hasbest) "Aucune distribution n'a réussi à confirmer l'hypothèse nulle." else p( if(nrow(result$acceptedDistr)>1) "les distributions qui verifient l'hypothèse nulle $\\mathcal{H}_0$ sont : \n```{r conclu-{{loi}}}\nresult$acceptedDistr```\nEn remarque que la loi `r result$bestdistr` a la valeur minimal de `r minima`\n" else "", p("La distribution la mieux ajustée est celle de la loi ",distributions[[result$bestdistr]],"\nOn écrit : $$\\mathbf{X}\\sim", if(result$bestdistr!="gamma") "\\mathcal{" else "",ltx,if(result$bestdistr!="gamma") "}(" else "(",p(round(as.numeric(result[[result$bestdistr]]$estimate),2), sep=", "),")$$"))

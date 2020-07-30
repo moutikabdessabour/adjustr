@@ -26,7 +26,7 @@ params:
   path : "~/Downloads/devoir20octobre2019/montantsinistres/montantssinistre30.csv"
   author: "Abdessabour MOUTIK"
   date: "`r Sys.Date()`"
-  title: "Adjustr"
+  title: "Ajustement d'une V.A discrète par adjustr"
 title: "`r params$title`"
 date: "`r params$date`"
 author: "`r params$author`"

@@ -8,6 +8,7 @@ rmd.discrete(
   output_file,
   author,
   path,
+  title,
   date = Sys.Date(),
   output_dir = getwd(),
   output_format,
