@@ -23,6 +23,8 @@ rmd.continuous(
 
 \item{path}{The pate to the csv file. note that the column that contains the random variable values must be named x}
 
+\item{title}{The title to be used in the template}
+
 \item{date}{The date to be used in the template}
 
 \item{output_dir}{The output directory for the rendered output_file. This allows for a choice of an alternate directory to which the output file should be written (the default output directory of that of the input file). If a path is provided with a filename in output_file the directory specified here will take precedence. Please note that any directory path provided will create any necessary directories if they do not exist.}
@@ -31,7 +33,7 @@ rmd.continuous(
 
 \item{verbose}{An option to suppress printing of the pandoc command line.}
 
-\item{...}{Additional arguments to be passed to \code{\link{rmarkdown::render}}}
+\item{...}{Additional arguments to be passed to \code{\link{rmarkdown::render()}}}
 }
 \value{
 When \code{run_pandoc = TRUE}, the compiled document is written into
@@ -52,4 +54,7 @@ rmd.continuous("continuous",
                output_format = "all",
                verbose=T)
 }
+}
+\seealso{
+\code{\link{rmarkdown::render()}} which this function wraps
 }

@@ -13,13 +13,15 @@ rmd.templates <- function(){
 #' @param output_file The name of the output file. If using NULL then the output filename will be based on filename for the input file. If a filename is provided, a path to the output file can also be provided. Note that the output_dir option allows for specifying the output file path as well, however, if also specifying the path, the directory must exist. If output_file is specified but does not have a file extension, an extension will be automatically added according to the output format. To avoid the automatic file extension, put the output_file value in \code{\link{I()}}, e.g., \code{I('my-output')}.
 #' @param author The author to use in the template
 #' @param path The pate to the csv file. note that the column that contains the random variable values must be named x
+#' @param title The title to be used in the template
 #' @param date The date to be used in the template
 #' @param output_dir The output directory for the rendered output_file. This allows for a choice of an alternate directory to which the output file should be written (the default output directory of that of the input file). If a path is provided with a filename in output_file the directory specified here will take precedence. Please note that any directory path provided will create any necessary directories if they do not exist.
 #' @param output_format The R Markdown output format to convert to. The option "all" will render all formats defined within the file. The option can be the name of a format (e.g. "html_document") and that will render the document to that single format. One can also use a vector of format names to render to multiple formats. Alternatively, you can pass an output format object (e.g. \code{html_document()}). If using NULL then the output format is the first one defined in the YAML frontmatter in the input file (this defaults to HTML if no format is specified there).
 #' @param verbose An option to suppress printing of the pandoc command line.
-#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render}}
+#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render()}}
 #'
 #' @inherit rmarkdown::render return
+#' @seealso \code{\link{rmarkdown::render()}} which this function wraps
 #' @export
 #'
 #' @examples
@@ -39,13 +41,15 @@ rmd.discrete<- function(output_file, author, path, title="Ajustement d'une V.A d
 #' @param output_file The name of the output file. If using NULL then the output filename will be based on filename for the input file. If a filename is provided, a path to the output file can also be provided. Note that the output_dir option allows for specifying the output file path as well, however, if also specifying the path, the directory must exist. If output_file is specified but does not have a file extension, an extension will be automatically added according to the output format. To avoid the automatic file extension, put the output_file value in \code{\link{I()}}, e.g., \code{I('my-output')}.
 #' @param author The author to use in the template
 #' @param path The pate to the csv file. note that the column that contains the random variable values must be named x
+#' @param title The title to be used in the template
 #' @param date The date to be used in the template
 #' @param output_dir The output directory for the rendered output_file. This allows for a choice of an alternate directory to which the output file should be written (the default output directory of that of the input file). If a path is provided with a filename in output_file the directory specified here will take precedence. Please note that any directory path provided will create any necessary directories if they do not exist.
 #' @param output_format The R Markdown output format to convert to. The option "all" will render all formats defined within the file. The option can be the name of a format (e.g. "html_document") and that will render the document to that single format. One can also use a vector of format names to render to multiple formats. Alternatively, you can pass an output format object (e.g. \code{html_document()}). If using NULL then the output format is the first one defined in the YAML frontmatter in the input file (this defaults to HTML if no format is specified there).
 #' @param verbose An option to suppress printing of the pandoc command line.
-#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render}}
+#' @param ... Additional arguments to be passed to \code{\link{rmarkdown::render()}}
 #'
 #' @inherit rmarkdown::render return
+#' @seealso \code{\link{rmarkdown::render()}} which this function wraps
 #' @export
 #'
 #' @examples
