@@ -10,6 +10,7 @@ knitr::opts_chunk$set(
   out.width = "100%",
   echo = FALSE
 )
+# git add . && git commit -m 'Added function to generate a pdf analyzing a random variable'  && git push origin master
 
 embed_png <- function(image_title, width = "100%") {
   knitr::asis_output(
